@@ -69,25 +69,27 @@ portMUX_TYPE main_mux = portMUX_INITIALIZER_UNLOCKED;
 void app_main(void){
     taskENTER_CRITICAL(&main_mux);
 
-    xTaskCreate((TaskFunction_t )uart_task,
+    xTaskCreatePinnedToCore((TaskFunction_t )uart_task,
                 (const char* )"uart_task",
                 (uint16_t )UART_TASK_STK_SIZE,
                 (void* )NULL,
                 (UBaseType_t )UART_TASK_PRIO,
-                (TaskHandle_t* )&UART_TASK_Handler);
+                (TaskHandle_t* )&UART_TASK_Handler,
+                APP_CPU_NUM);
 
-    xTaskCreate((TaskFunction_t )cli_task,
+    xTaskCreatePinnedToCore((TaskFunction_t )cli_task,
                 (const char* )"cli_task",
                 (uint16_t )CLI_TASK_STK_SIZE,
                 (void* )NULL,
                 (UBaseType_t )CLI_TASK_PRIO,
-                (TaskHandle_t* )&CLI_TASK_Handler);
-    
+                (TaskHandle_t* )&CLI_TASK_Handler,
+                APP_CPU_NUM);
+
     Uart_Data_Stream = xStreamBufferCreate(Data_STREAM_SIZE, 1);
 
-    vTaskDelete(NULL);
-
     taskEXIT_CRITICAL(&main_mux);
+
+    vTaskDelete(NULL);
 }
 
 /* 串口接收任务 */
@@ -169,3 +171,4 @@ void cli_task(void *pvParameters){
         vTaskDelay(pdMS_TO_TICKS(10));
     }
 }
+

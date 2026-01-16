@@ -1,2 +1,3 @@
 # An-interesting-old-warehouse
 This repository records some code demos and small components I developed during my time at university. Next, I will periodically organize and upload them to this repository. I hope that these code can be of some help to you !
+I am an embedded systems developer (a hardware–software system architect) and a master’s graduate. This repository contains code demos and small components that I developed during my time at university. I have reorganized the code and written a series of demos for this repository. All of the code was written between 2016 and 2022. Although there may now be better algorithms and implementation approaches, I still hope that these code can be of some help to you.

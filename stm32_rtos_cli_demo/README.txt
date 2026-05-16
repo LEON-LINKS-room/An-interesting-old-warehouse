@@ -1,0 +1,3 @@
+This demo demonstrates how to run FreeRTOS on the STM32F103C8T6 and transplant the previously released cli_lite command interface code. It's very simple; you just need to call "start_all_task()" in the main.c file.
+
+Although the STM32F103C8T6 has relatively limited hardware resources, it was still able to smoothly use cli_lite command interface and output a large amount of debugging information in previous electronic competitions, which was of great help to me. Moreover, it can run perfectly in the FreeRTOS system.

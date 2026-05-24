@@ -257,6 +257,11 @@ void cli_deal(uint8_t rx_data){
             }
         }
 
+		while (cursor_pos < rx_index) {
+			uart_echo(&rx_buffer[cursor_pos], 1);
+			cursor_pos++;
+		}
+		
         if (match == 1 && last){
             const char *p = last + rx_index;
             while (*p && rx_index < USART_REC_LEN - 1){
@@ -280,6 +285,7 @@ void cli_deal(uint8_t rx_data){
             const char prompt[] = "[LEON]@LINKS:";
             uart_echo((uint8_t *)prompt, strlen(prompt));
             uart_echo(rx_buffer, rx_index);
+			cursor_pos = rx_index;
         }
         goto rx_exit;
     }

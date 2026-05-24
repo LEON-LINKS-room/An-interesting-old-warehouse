@@ -236,7 +236,7 @@ void cli_deal(void)
             }
 
             while (cursor_pos < rx_index) {
-                uart_echo(&rx_buffer[cursor_pos], 1);   // 输出当前字符，移动终端上的光标至行尾
+                uart_echo(&rx_buffer[cursor_pos], 1);
                 cursor_pos++;
             }
 			

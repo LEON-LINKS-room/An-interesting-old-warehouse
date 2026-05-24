@@ -32,17 +32,17 @@ SOFTWARE.
 extern QueueHandle_t cli_queue;
 
 
-// √¸¡Ó∫Ø ˝-√¸¡Ó√˚-√¸¡ÓÀµ√˜
+// ÂëΩ‰ª§ÂáΩÊï∞-ÂëΩ‰ª§Âêç-ÂëΩ‰ª§ËØ¥Êòé
 _cmd_table cmd_table[]={
     {(void *)cmd_disp_dev_info,"disp_dev_info","no parm"},
 };
 
 int cmdnum = sizeof(cmd_table)/sizeof(_cmd_table);
-char token[CMD_PARMNUM][CMD_LONGTH]={0};                //“ªÃı√¸¡ÓµƒΩ‚Œˆª∫¥Ê
+char token[CMD_PARMNUM][CMD_LONGTH]={0};                //‰∏ÄÊù°ÂëΩ‰ª§ÁöÑËß£ÊûêÁºìÂ≠ò
 static uint16_t rx_index = 0;
 static uint16_t cursor_pos = 0;
 
-static char cmd_history[CMD_HISTORY_NUM][CMD_MAX_LEN];	//¿˙ ∑√¸¡Óª∫¥Ê
+static char cmd_history[CMD_HISTORY_NUM][CMD_MAX_LEN];	//ÂéÜÂè≤ÂëΩ‰ª§ÁºìÂ≠ò
 static int history_count = 0;
 static int history_index = -1;
 
@@ -53,12 +53,12 @@ bool cmd_deal_ok = 1;
 
 static char log_buf[128]={0};
 
-// ¥Æø⁄∑¢ÀÕªÿœ‘
+// ‰∏≤Âè£ÂèëÈÄÅÂõûÊòæ
 void uart_echo(uint8_t *data,uint16_t len){
     HAL_UART_Transmit(&huart1,data,len,50);
 }
 
-// ≈–∂œ«∞◊∫
+// Âà§Êñ≠ÂâçÁºÄ
 static bool str_start_with(const char *str, const char *prefix){
     while (*prefix){
         if (*str++ != *prefix++)
@@ -67,7 +67,7 @@ static bool str_start_with(const char *str, const char *prefix){
     return true;
 }
 
-// ±£¥Ê¿˙ ∑√¸¡Ó
+// ‰øùÂ≠òÂéÜÂè≤ÂëΩ‰ª§
 static void history_save(const char *cmd){
     if (cmd[0] == '\0') return;
 
@@ -79,7 +79,7 @@ static void history_save(const char *cmd){
     history_index = history_count;
 }
 
-// «Â≥˝µ±«∞––
+// Ê∏ÖÈô§ÂΩìÂâçË°å
 static void clear_line(void){
     while (cursor_pos > 0){
         uint8_t bs_seq[3] = {'\b', ' ', '\b'};
@@ -159,7 +159,7 @@ static void cmd_history_down(void){
     uart_echo(rx_buffer, rx_index);
 }
 
-// CLI¥¶¿Ì
+// CLIÂ§ÑÁêÜ
 void cli_deal(void)
 {
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
@@ -235,6 +235,11 @@ void cli_deal(void)
                 }
             }
 
+            while (cursor_pos < rx_index) {
+                uart_echo(&rx_buffer[cursor_pos], 1);   // ËæìÂá∫ÂΩìÂâçÂ≠óÁ¨¶ÔºåÁßªÂä®ÁªàÁ´Ø‰∏äÁöÑÂÖâÊ†áËá≥Ë°åÂ∞æ
+                cursor_pos++;
+            }
+			
             if (match == 1 && last){
                 const char *p = last + rx_index;
                 while (*p && rx_index < USART_REC_LEN - 1){
@@ -258,6 +263,7 @@ void cli_deal(void)
                 const char prompt[] = "[LEON]@LINKS:";
                 uart_echo((uint8_t *)prompt, strlen(prompt));
                 uart_echo(rx_buffer, rx_index);
+				cursor_pos = rx_index;
             }
             goto rx_exit;
         }
@@ -280,7 +286,7 @@ void cli_deal(void)
         }
     }
 
-    //»Áπ˚∑¢ÀÕµº÷¬–Ë“™«–ªª…œœ¬Œƒ£¨‘Ú‘⁄ÕÀ≥ˆISR«∞÷¥––«–ªª
+    //Â¶ÇÊûúÂèëÈÄÅÂØºËá¥ÈúÄË¶ÅÂàáÊç¢‰∏ä‰∏ãÊñáÔºåÂàôÂú®ÈÄÄÂá∫ISRÂâçÊâßË°åÂàáÊç¢
     portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 
 rx_exit:

@@ -236,7 +236,7 @@ void cli_deal(void)
             }
 
             while (cursor_pos < rx_index) {
-                uart_echo(&rx_buffer[cursor_pos], 1);
+                uart_echo(&rx_buffer[cursor_pos], 1);	//更新光标索引，保持与光标实际位置一致
                 cursor_pos++;
             }
 			

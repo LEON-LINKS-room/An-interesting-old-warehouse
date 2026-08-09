@@ -1,17 +1,41 @@
+/*******************************************************************************
+MIT License
+
+Copyright (c) 2021 LEON-LINKS-room
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*******************************************************************************/
+
 #include "menuDriver.h"
 
-// -------------------- �ⲿ���� --------------------
+// -------------------- 外部变量 --------------------
 extern KEYCTRL key[4];
 
-// -------------------- �˵�״̬ --------------------
-static int menu_level = 0;  // ��ǰ�㼶����=0����=1
-static int main_index = 1;  // ���˵�����λ��
-static int main_cursor = 1; // ���˵����λ��
-static int sub_index = 1;   // �Ӳ˵�����λ��
-static int sub_cursor = 1;  // �Ӳ˵����λ��
+// -------------------- 菜单状态 --------------------
+static int menu_level = 0;  // 当前层级：主=0，子=1
+static int main_index = 1;  // 主菜单索引位置
+static int main_cursor = 1; // 主菜单光标位置
+static int sub_index = 1;   // 子菜单索引位置
+static int sub_cursor = 1;  // 子菜单光标位置
 
 // ====================================================
-// ��������
+// 按键处理
 // ====================================================
 void KeyProcess(void)
 {
@@ -46,13 +70,13 @@ void KeyProcess(void)
     }
 }
 
-// -------------------- ���ߺ������� --------------------
+// -------------------- 工具函数声明 --------------------
 static void CursorToggle(int row, const char *text, int enable);
 static void ScreenRefreshMain(void);
 static void ScreenRefreshFull(void);
 static void MenuDisplay(void);
 
-// -------------------- �ص�����ʾ�� --------------------
+// -------------------- 回调函数示例 --------------------
 static void StaticHandler(int main_idx, int sub_idx)
 {
 }
@@ -61,7 +85,7 @@ static void DynamicHandler(int main_idx, int sub_idx)
 {
 }
 
-// -------------------- �˵����� ------------------------
+// -------------------- 菜单定义 ------------------------
 static MENU_TABLE menu[MM_NUM] = {
     {"LEVEL-1", {"SUB-11", "SUB-12", "SUB-13", "SUB-14", "SUB-15"}, 5, StaticHandler, DynamicHandler},
     {"LEVEL-2", {"SUB-21", "SUB-22", "SUB-23", "SUB-24", "SUB-25", "SUB-26"}, 6, StaticHandler, DynamicHandler},
@@ -71,7 +95,7 @@ static MENU_TABLE menu[MM_NUM] = {
 };
 
 // ====================================================
-// ��̬��ʾ����(����while(1)��)
+// 动态显示更新(放在while(1)中)
 // ====================================================
 void FuncUpdate(void)
 {
@@ -85,15 +109,15 @@ void FuncUpdate(void)
 }
 
 // ====================================================
-// ���ߺ���
+// 工具函数
 // ====================================================
 static void CursorToggle(int row, const char *text, int enable)
 {
     if (text == NULL)
         return;
     int width = strlen(text) * 8;
-    OLED_invert_area(8, row * 16, 16, width); // invert �л�ģʽ
-    (void)enable;                             // �����ֽӿ�һ��
+    OLED_invert_area(8, row * 16, 16, width); // invert 切换模式
+    (void)enable;                             // 仅保持接口一致
 }
 
 static void ScreenRefreshMain(void)
@@ -107,7 +131,7 @@ static void ScreenRefreshFull(void)
 }
 
 // ====================================================
-// �˵���ʾ
+// 菜单显示
 // ====================================================
 static void MenuDisplay(void)
 {
@@ -116,7 +140,7 @@ static void MenuDisplay(void)
 
     switch (menu_level)
     {
-    case MENU_LEVEL_MAIN: // ���˵�
+    case MENU_LEVEL_MAIN: // 主菜单
         OLED_erase_area_anywhere(0, 0, 16, 128);
         OLED_ShowString(0, 0, (uint8_t *)"MainMenu", 16);
 
@@ -141,7 +165,7 @@ static void MenuDisplay(void)
         }
         break;
 
-    case MENU_LEVEL_SUB: // �Ӳ˵�
+    case MENU_LEVEL_SUB: // 子菜单
         OLED_erase_area_anywhere(0, 0, 16, 128);
         OLED_ShowString(0, 0, (uint8_t *)menu[main_index - 1].main, 16);
 
@@ -172,7 +196,7 @@ static void MenuDisplay(void)
 }
 
 // ====================================================
-// �˵���ʼ��
+// 菜单初始化
 // ====================================================
 void MenuInit(void)
 {
@@ -188,7 +212,7 @@ void MenuInit(void)
 }
 
 // ====================================================
-// �˵�����
+// 菜单操作
 // ====================================================
 void MenuMoveDown(void)
 {
@@ -248,7 +272,7 @@ void MenuConfirm(void)
 
     if (menu_level == MENU_LEVEL_MAIN)
     {
-        // �����Ӳ˵�
+        // 进入子菜单
         CursorToggle(main_cursor, m->main, 0);
         menu_level = MENU_LEVEL_SUB;
         MenuDisplay();
@@ -258,7 +282,7 @@ void MenuConfirm(void)
         }
         else if (m->scallback)
         {
-            // ���Ӳ˵���ֱ�ӽ��빦�ܽ���
+            // 无子菜单，直接进入功能界面
             m->scallback(main_index, 0);
             menu_level = MENU_LEVEL_FUNC;
         }
@@ -266,11 +290,11 @@ void MenuConfirm(void)
     }
     else if (menu_level == MENU_LEVEL_SUB)
     {
-        // ִ���Ӳ˵�
+        // 执行子菜单
         if (m->scallback)
         {
             m->scallback(main_index, sub_index);
-            menu_level = MENU_LEVEL_FUNC; // ���빦�ܲ�
+            menu_level = MENU_LEVEL_FUNC; // 进入功能层
         }
         else
         {
@@ -279,8 +303,8 @@ void MenuConfirm(void)
     }
     else if (menu_level == MENU_LEVEL_FUNC)
     {
-        // ������ܲ��ﻹҪ����Ƕ�ף�������������չ
-        // Ŀǰ���ֲ��������ܲ����ٴ�ȷ�ϼ��ɺ��Ի򽻸��ص��Լ�����
+        // 如果功能层里还要继续嵌套，可以在这里扩展
+        // 目前保持不动：功能层内再次确认键可忽略或交给回调自己处理
         printf("Already in FUNC level, ignoring extra confirm.\r\n");
     }
 }

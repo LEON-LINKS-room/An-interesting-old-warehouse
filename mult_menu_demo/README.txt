@@ -1,0 +1,4 @@
+A Multi-Level Menu Implementation for Embedded Displays
+In embedded engineering applications, human-machine interaction (HMI) plays a critical role in system usability. While serial ports combined with CLI (Command-Line Interface) are commonly used for device interaction, screen-based visual interfaces offer an equally important channel for user interaction—especially in scenarios where real-time feedback and intuitive control are desired.
+
+This repository provides a lightweight, multi-level menu display implementation that can be easily ported to your own embedded projects. The code has been tested and demonstrated on a 0.96-inch OLED display, but it is designed to be display-agnostic and adaptable to other screen types with minimal effort.

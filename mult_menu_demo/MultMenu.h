@@ -1,3 +1,27 @@
+/*******************************************************************************
+MIT License
+
+Copyright (c) 2021 LEON-LINKS-room
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*******************************************************************************/
+
 #ifndef __MENUDRIVER_H_
 #define __MENUDRIVER_H_
 
@@ -9,26 +33,26 @@
 #include "stdint.h"
 #include "stdlib.h"
 
-#define CUR_AY 3  // ¹â±ê·¶Î§ Ö»ÓĞ3ĞĞ
-#define MM_NUM 5  // Ö÷²Ëµ¥ÊıÁ¿ ÒªÓë¶¨ÒåµÄ²Ëµ¥menu[]³ÉÔ±ÊıÁ¿Ò»ÖÂ
-#define SU_NUM 10 // ´Î²Ëµ¥ÊıÁ¿ ¿ÉĞŞ¸Ä×î´óÖ§³ÖÊıÁ¿
+#define CUR_AY 3  // å…‰æ ‡èŒƒå›´ åªæœ‰3è¡Œ
+#define MM_NUM 5  // ä¸»èœå•æ•°é‡ è¦ä¸å®šä¹‰çš„èœå•menu[]æˆå‘˜æ•°é‡ä¸€è‡´
+#define SU_NUM 10 // æ¬¡èœå•æ•°é‡ å¯ä¿®æ”¹æœ€å¤§æ”¯æŒæ•°é‡
 
-#define MENU_LEVEL_MAIN 0 // Ö÷²Ëµ¥
-#define MENU_LEVEL_SUB 1  // ×Ó²Ëµ¥ÁĞ±í
-#define MENU_LEVEL_FUNC 2 // ¹¦ÄÜ½çÃæ£¨»Øµ÷Ö´ĞĞ£©
+#define MENU_LEVEL_MAIN 0 // ä¸»èœå•
+#define MENU_LEVEL_SUB 1  // å­èœå•åˆ—è¡¨
+#define MENU_LEVEL_FUNC 2 // åŠŸèƒ½ç•Œé¢ï¼ˆå›è°ƒæ‰§è¡Œï¼‰
 
-// -------------------- »Øµ÷º¯ÊıÀàĞÍ --------------------
-typedef void (*DynamicCallback)(int main_idx, int sub_idx); // ÖÜÆÚË¢ĞÂ
-typedef void (*StaticCallback)(int main_idx, int sub_idx);  // ¾²Ì¬ÏÔÊ¾
+// -------------------- å›è°ƒå‡½æ•°ç±»å‹ --------------------
+typedef void (*DynamicCallback)(int main_idx, int sub_idx); // å‘¨æœŸåˆ·æ–°
+typedef void (*StaticCallback)(int main_idx, int sub_idx);  // é™æ€æ˜¾ç¤º
 
-// -------------------- ²Ëµ¥½á¹¹ --------------------
+// -------------------- èœå•ç»“æ„ --------------------
 typedef struct
 {
-    const char *main;          // Ö÷²Ëµ¥±êÌâ
-    const char *sub[SU_NUM];   // ×Ó²Ëµ¥±êÌâ£¨×î¶à10¸ö£¬¿É¸Äºê£©
-    int sub_count;             // ×Ó²Ëµ¥ÊıÁ¿
-    StaticCallback scallback;  // ¹¦ÄÜÒ³Ãæ¶¯Ì¬ÏÔÊ¾£¨¾²Ì¬£©
-    DynamicCallback dcallback; // ¹¦ÄÜÒ³Ãæ¶¯Ì¬ÏÔÊ¾£¨¶¯Ì¬£©
+    const char *main;          // ä¸»èœå•æ ‡é¢˜
+    const char *sub[SU_NUM];   // å­èœå•æ ‡é¢˜ï¼ˆæœ€å¤š10ä¸ªï¼Œå¯æ”¹å®ï¼‰
+    int sub_count;             // å­èœå•æ•°é‡
+    StaticCallback scallback;  // åŠŸèƒ½é¡µé¢åŠ¨æ€æ˜¾ç¤ºï¼ˆé™æ€ï¼‰
+    DynamicCallback dcallback; // åŠŸèƒ½é¡µé¢åŠ¨æ€æ˜¾ç¤ºï¼ˆåŠ¨æ€ï¼‰
 } MENU_TABLE;
 
 void KeyProcess(void);

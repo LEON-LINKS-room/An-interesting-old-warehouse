@@ -1,6 +1,30 @@
+/*******************************************************************************
+MIT License
+
+Copyright (c) 2023 LEON-LINKS-room
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*******************************************************************************/
+
 #include "ina219.h"
 
-// Ð´INA219¼Ä´æÆ÷
+// å†™INA219å¯„å­˜å™¨
 static void INA219_WriteRegister(uint8_t reg, uint16_t value)
 {
     uint8_t data[2];
@@ -9,7 +33,7 @@ static void INA219_WriteRegister(uint8_t reg, uint16_t value)
     HAL_I2C_Mem_Write(&hi2c2, INA219_ADDRESS, reg, I2C_MEMADD_SIZE_8BIT, data, 2, HAL_MAX_DELAY);
 }
 
-// ¶ÁINA219¼Ä´æÆ÷
+// è¯»INA219å¯„å­˜å™¨
 static uint16_t INA219_ReadRegister(uint8_t reg)
 {
     uint8_t data[2];
@@ -17,23 +41,23 @@ static uint16_t INA219_ReadRegister(uint8_t reg)
     return ((uint16_t)data[0] << 8) | data[1];
 }
 
-// ³õÊ¼»¯
+// åˆå§‹åŒ–
 void INA219_Init(void)
 {
-    // Ä¬ÈÏÉèÖÃ Bus Voltage Range:32V; PGA:1/8; BADC: 12bit; SADC: 12bit; MODE: Shunt and bus, continuous
+    // é»˜è®¤è®¾ç½® Bus Voltage Range:32V; PGA:1/8; BADC: 12bit; SADC: 12bit; MODE: Shunt and bus, continuous
     INA219_WriteRegister(0x00, 0x399F);
-    // Ð£×¼ ×î´ó²âÁ¿µçÁ÷3.2A ·ÖÁ÷µç×èÎª0.1Å· Ð£×¼ÖµµÃ: 4194=0x1062
+    // æ ¡å‡† æœ€å¤§æµ‹é‡ç”µæµ3.2A åˆ†æµç”µé˜»ä¸º0.1æ¬§ æ ¡å‡†å€¼å¾—: 4194=0x1062
     INA219_WriteRegister(0x05, 0x1062);
 }
 
-// ¶Á ShuntVoltage SADC IN+ to IN-
+// è¯» ShuntVoltage SADC IN+ to IN-
 float INA219_ReadShuntVoltage_V(void)
 {
     int16_t raw = (int16_t)INA219_ReadRegister(0x01);
     return (float)raw * 0.00001f; // 10 uV/bit
 }
 
-// ¶Á BusVoltage BADC IN- to GND
+// è¯» BusVoltage BADC IN- to GND
 float INA219_ReadBusVoltage_V(void)
 {
     uint16_t raw = INA219_ReadRegister(0x02);
@@ -41,21 +65,21 @@ float INA219_ReadBusVoltage_V(void)
     return (float)bus_raw * 0.004f; // 4 mV/bit
 }
 
-// ¶Á Power
+// è¯» Power
 float INA219_ReadPower_W(void)
 {
     uint16_t raw = INA219_ReadRegister(0x03);
     return (float)raw * 0.00195312f; // 2 mW/bit
 }
 
-// ¶Á Current
+// è¯» Current
 float INA219_ReadCurrent_A(void)
 {
     int16_t raw = (int16_t)INA219_ReadRegister(0x04);
     return (float)raw * 0.00009766f; // 100 uA/bit
 }
 
-// ¶ÁµçÔ´µçÑ¹(Battery Voltage)
+// è¯»ç”µæºç”µåŽ‹(Battery Voltage)
 float INA219_ReadTotalVoltage_V(void)
 {
     return INA219_ReadShuntVoltage_V() + INA219_ReadBusVoltage_V();

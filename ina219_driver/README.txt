@@ -1,0 +1,1 @@
+INA219 is a power monitoring chip. In embedded development, it can be used to monitor the power consumption of the entire system as well as the battery capacity. This is the driver code I wrote before. The driver code for this chip is very simple and I hope it will be helpful to you.

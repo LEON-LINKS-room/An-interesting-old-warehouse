@@ -1,0 +1,1 @@
+W25Q16 is a type of Flash memory chip. It can be used in embedded systems to record logs and save configuration files. This is the driver code I wrote before, which includes basic read and write functions.
